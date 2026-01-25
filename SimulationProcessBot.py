@@ -16,6 +16,7 @@ from LLMAgent.trafficTools import (
 
 import gradio as gr
 import openai.api_requestor
+
 openai.api_requestor.TIMEOUT_SECS = 30
 
 # ------------------------------------------------------------------------------
@@ -44,7 +45,7 @@ elif OPENAI_CONFIG['OPENAI_API_TYPE'] == 'openai':
 elif OPENAI_CONFIG['OPENAI_API_TYPE'] == 'deepseek':
     os.environ["OPENAI_API_KEY"] = OPENAI_CONFIG['DEEPSEEK_API_KEY']
     os.environ["OPENAI_API_BASE"] = OPENAI_CONFIG['DEEPSEEK_API_BASE']
-
+    # 出于与 OpenAI 兼容考虑，将base_url设置为https://api.deepseek.com/v1来使用，但注意，此处v1与模型版本无关
     llm = ChatOpenAI(
         temperature=0,
         model_name=OPENAI_CONFIG['DEEPSEEK_MODEL'],
@@ -58,7 +59,6 @@ elif OPENAI_CONFIG['OPENAI_API_TYPE'] == 'deepseek':
 
 if not os.path.exists('./fig/'):
     os.mkdir('./fig/')
-
 
 sumoCFGFile = './real-world-simulation-withTLS/xuancheng.sumocfg'
 sumoNetFile = './real-world-simulation-withTLS/xuancheng.net.xml'
@@ -131,6 +131,7 @@ According to the data above, after optimization, Traffic volume has increased at
 # --EN Initilize the ConversationBot
 bot = ConversationBot(llm, toolModels, botPrefix, verbose=True)
 
+
 # ------------------------------------------------------------------------------
 # --ZH 设置 gradio 界面
 # --EN Configure the grdio interface
@@ -168,18 +169,18 @@ def respond(msg: str, chat_history: list, thoughts: str):
 
 
 with gr.Blocks(
-    title="Traffic Simulation Process Bot", theme=gr.themes.Base(text_size=gr.themes.sizes.text_lg)
+        title="Traffic Simulation Process Bot", theme=gr.themes.Base(text_size=gr.themes.sizes.text_lg)
 ) as demo:
     with gr.Row(visible=True, variant="panel"):
-        with gr.Column(visible=True, variant='default'):
+        with gr.Column(visible=True, variant='default', scale=2):
             chatbot = gr.Chatbot(scale=2, height=650)
 
             with gr.Row():
-                humanMsg = gr.Textbox(scale=2)
+                humanMsg = gr.Textbox(scale=4)
                 submitBtn = gr.Button("Submit", scale=1)
             clearBtn = gr.ClearButton()
             gr.Examples(
-                label='You may want to ask the following questions:',
+                label='你可能对下列问题感兴趣：',
                 examples=[
                     "Run the simulation",
                     "What's the most congested intersection?",
@@ -191,16 +192,17 @@ with gr.Blocks(
                 # outputs=[humanMsg, chatbot],
                 # fn=testFunc
             )
-        ReActMsg = gr.Text(
-            label="Thoughts and Actions of the Chatbot",
-            interactive=False,
-            lines=50
-        )
+        with gr.Column(visible=True, variant='default', scale=2):
+            ReActMsg = gr.Text(
+                label="Thoughts and Actions of the Chatbot",
+                interactive=False,
+                lines=50
+            )
 
-    humanMsg.submit(
-        respond,
-        [humanMsg, chatbot, ReActMsg],
-        [humanMsg, chatbot, ReActMsg]
+    humanMsg.submit(  # 输入框里敲回车
+        respond,  # 调用函数
+        [humanMsg, chatbot, ReActMsg],  # 输入
+        [humanMsg, chatbot, ReActMsg]  # 输出
     )
     submitBtn.click(
         respond,
