@@ -4,7 +4,7 @@ import yaml
 
 def fetch_from_database(query):
     # 读取配置文件
-    with open("dbconfig.yaml", "r") as f:
+    with open("dbconfig.yaml", "r", encoding="UTF-8") as f:
         config = yaml.safe_load(f)
 
     # 连接到PostgreSQL数据库
