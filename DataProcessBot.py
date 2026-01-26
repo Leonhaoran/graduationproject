@@ -7,19 +7,24 @@ from langchain.chat_models import AzureChatOpenAI, ChatOpenAI
 
 from LLMAgent.ConversationBot import ConversationBot
 
-from LLMAgent.dataTools import (
-    roadVolumeTrend,
-    roadVolume,
-    roadNameToID,
-    plotGeoHeatmap,
-    getCurrentTime,
-    roadVisulization,
-    odVolume,
-    odMap
+# from LLMAgent.dataTools import (
+#     roadVolumeTrend,
+#     roadVolume,
+#     roadNameToID,
+#     plotGeoHeatmap,
+#     getCurrentTime,
+#     roadVisulization,
+#     odVolume,
+#     odMap
+# )
+
+from Agent.data_tools import (
+    GetCurrentTime
 )
 
 import gradio as gr
 import openai.api_requestor
+
 openai.api_requestor.TIMEOUT_SECS = 30
 
 OPENAI_CONFIG = yaml.load(open('config.yaml'), Loader=yaml.FullLoader)
@@ -56,15 +61,19 @@ elif OPENAI_CONFIG['OPENAI_API_TYPE'] == 'deepseek':
 if not os.path.exists('./fig/'):
     os.mkdir('./fig/')
 
+# toolModels = [
+#     roadVolumeTrend('./fig/'),
+#     roadVolume(),
+#     roadNameToID(),
+#     plotGeoHeatmap('./fig/'),
+#     GetCurrentTime(),
+#     roadVisulization('./fig/'),
+#     odVolume(),
+#     odMap('./fig/')
+# ]
+
 toolModels = [
-    roadVolumeTrend('./fig/'),
-    roadVolume(),
-    roadNameToID(),
-    plotGeoHeatmap('./fig/'),
-    getCurrentTime(),
-    roadVisulization('./fig/'),
-    odVolume(),
-    odMap('./fig/')
+    GetCurrentTime(),
 ]
 
 botPrefix = """
@@ -80,7 +89,9 @@ botPrefix = """
 # 10. When you realize that you need to clarify what the human wants, end your actions and ask the human for more information as your final answer.
 """
 
+# 决定是否输出调试信息
 bot = ConversationBot(llm, toolModels, botPrefix, verbose=True)
+# bot = ConversationBot(llm, toolModels, botPrefix)
 
 
 def reset(chat_history: list, thoughts: str):
@@ -115,7 +126,7 @@ def respond(msg: str, chat_history: list, thoughts: str):
 
 
 with gr.Blocks(
-    title="Traffic Data Process Bot", theme=gr.themes.Base(text_size=gr.themes.sizes.text_md)
+        title="Traffic Data Process Bot", theme=gr.themes.Base(text_size=gr.themes.sizes.text_md)
 ) as demo:
     with gr.Row(visible=True, variant="panel"):
         with gr.Column(visible=True, variant='default'):
