@@ -6,8 +6,7 @@ from langchain.chat_models import AzureChatOpenAI
 from LLMAgent.callbackHandler import CustomHandler
 from langchain.callbacks import get_openai_callback
 from langchain.memory import ConversationBufferMemory
-from langchain.agents import ZeroShotAgent, Tool, AgentExecutor
-
+from langchain.agents import ZeroShotAgent, Tool, AgentExecutor  # ZeroShotAgent 不用训练，只靠prompt决定是否用工具
 
 temp = """
 You need to recall the original 'Question' before comming up with a 'Thought'. 
@@ -81,7 +80,7 @@ Question: {input}
 class ConversationBot:
     def __init__(
             self, llm: AzureChatOpenAI, toolModels: List,
-            customedPrefix: str, verbose: bool = False
+            customedPrefix: str, verbose: bool = False  # verbose 默认为 false
     ) -> Any:
         self.ch = CustomHandler()
         tools = []
@@ -102,6 +101,9 @@ class ConversationBot:
             suffix=suffix,
             input_variables=["input", "chat_history", "agent_scratchpad"],
         )
+
+        # Memory 会自动产出变量
+        # memory_key 决定这个变量在prompt里叫什么名字
         self.agent_memory = ConversationBufferMemory(memory_key="chat_history")
 
         llm_chain = LLMChain(llm=llm, prompt=prompt)
