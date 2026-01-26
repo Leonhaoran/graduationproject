@@ -184,3 +184,5 @@ config.yaml
 dbconfig.yaml
 
 fig/
+
+test.py

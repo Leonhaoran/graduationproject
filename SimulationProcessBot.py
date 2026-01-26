@@ -145,6 +145,9 @@ def reset(chat_history: list, thoughts: str):
     return chat_history, thoughts
 
 
+# msg: 在输入框输入的文字
+# chat_history: 存储之前对话的列表（gradio自动维护）
+# thoughts: 右侧文本框里显示的“思考过程”字符串
 def respond(msg: str, chat_history: list, thoughts: str):
     res, cb = bot.dialogue(msg)
     regex = re.compile(r'`([^`]+)`')

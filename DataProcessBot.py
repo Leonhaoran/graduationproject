@@ -42,6 +42,16 @@ elif OPENAI_CONFIG['OPENAI_API_TYPE'] == 'openai':
         max_tokens=1024,
         request_timeout=60
     )
+elif OPENAI_CONFIG['OPENAI_API_TYPE'] == 'deepseek':
+    os.environ["OPENAI_API_KEY"] = OPENAI_CONFIG['DEEPSEEK_API_KEY']
+    os.environ["OPENAI_API_BASE"] = OPENAI_CONFIG['DEEPSEEK_API_BASE']
+    # 出于与 OpenAI 兼容考虑，将base_url设置为https://api.deepseek.com/v1来使用，但注意，此处v1与模型版本无关
+    llm = ChatOpenAI(
+        temperature=0,
+        model_name=OPENAI_CONFIG['DEEPSEEK_MODEL'],
+        max_tokens=1024,
+        request_timeout=60
+    )
 
 if not os.path.exists('./fig/'):
     os.mkdir('./fig/')

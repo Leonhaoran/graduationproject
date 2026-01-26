@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+
 def get_fake_current_time():
     # 获取当前时间
     current_time = datetime.now()
@@ -11,6 +12,7 @@ def get_fake_current_time():
     formatted_time = new_date.strftime('%Y-%m-%d %H:%M:%S')
 
     return formatted_time
+
 
 def get_time_period(given_time_str):
     # 将字符串转换为datetime对象
