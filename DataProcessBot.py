@@ -77,6 +77,7 @@ toolModels = [
 ]
 
 botPrefix = """
+[WHO ARE YOU]
 # 1. You are a AI to assist human with traffic big-data analysis and visulization. #
 # 2. You have access to the road network and traffic flow data in Xuancheng City, Anhui Province, China.
 # 3. Whenever you are about to come up with a thought, recall the human message to check if you already have enough information for the final answer. If so, you shouldn't infer or fabricate any more needs or questions based on your own ideas.
@@ -139,6 +140,7 @@ with gr.Blocks(
             gr.Examples(
                 label='You may want to ask the following questions:',
                 examples=[
+                    "现在是什么时间？",
                     "Show me the OD map from 7am to 9am today.",
                     "Show me the current network heatmap.",
                     "Show me the traffic volume of OD pairs from 5pm to 7pm yesterday.",
