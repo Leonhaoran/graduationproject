@@ -19,7 +19,8 @@ from LLMAgent.ConversationBot import ConversationBot
 # )
 
 from Agent.data_tools import (
-    GetCurrentTime
+    GetCurrentTime,
+    UAVNameToInfo
 )
 
 import gradio as gr
@@ -74,6 +75,7 @@ if not os.path.exists('./fig/'):
 
 toolModels = [
     GetCurrentTime(),
+    UAVNameToInfo()
 ]
 
 botPrefix = """
@@ -88,6 +90,20 @@ botPrefix = """
 # 8. Your tasks will be highly time sensitive. When generating your final answer, you need to state the time of the data you are using.
 # 9. It's ok if the human message is not a traffic data related task, don't take any action and just respond to it like an ordinary conversation using your own ability and knowledge as a chat AI.
 # 10. When you realize that you need to clarify what the human wants, end your actions and ask the human for more information as your final answer.
+
+
+1. Thought: 思考用户的问题，决定是否需要调用工具。
+2. Action: 工具名称（必须从可选工具列表中选择）。
+3. Action Input: 工具的输入参数。
+4. Observation: 工具返回的结果。
+... （如有必要，重复上述步骤）
+5. Final Answer: [最终结论] 当你从工具中获得足够信息后，必须且只能通过 Final Answer 给出中文回复。
+
+[禁用行为]
+- 严禁在 Thought 阶段直接回答用户，必须通过 Final Answer 结束对话。
+- 如果工具返回 "No UAV record"等明确的信息。此时你的步骤应该是：
+  Thought: ……。
+  Final Answer: ……。
 """
 
 # 决定是否输出调试信息
@@ -105,18 +121,21 @@ def reset(chat_history: list, thoughts: str):
 
 def respond(msg: str, chat_history: list, thoughts: str):
     res, cb = bot.dialogue(msg)
-    regex = re.compile(r'`([^`]+)`')
-    try:
-        filenames = regex.findall(res)
-    except AttributeError:
-        filenames = None
-    if filenames:
-        chat_history += [(msg, None)]
-        for fn in filenames:
-            chat_history += [(None, (fn,))]
-        chat_history += [(None, res)]
-    else:
-        chat_history += [(msg, res)]
+    # 文件
+    # regex = re.compile(r'`([^`]+)`')
+    # try:
+    #     filenames = regex.findall(res)
+    # except AttributeError:
+    #     filenames = None
+    # if filenames:
+    #     chat_history += [(msg, None)]
+    #     for fn in filenames:
+    #         chat_history += [(None, (fn,))]
+    #     chat_history += [(None, res)]
+    # else:
+    #     chat_history += [(msg, res)]
+
+    chat_history += [(msg, res)]
 
     thoughts += f"\n>>> {msg}\n"
     for actionMemory in bot.ch.memory[-2]:
@@ -141,6 +160,7 @@ with gr.Blocks(
                 label='You may want to ask the following questions:',
                 examples=[
                     "现在是什么时间？",
+                    "drone_1对应的id是多少",
                     "Show me the OD map from 7am to 9am today.",
                     "Show me the current network heatmap.",
                     "Show me the traffic volume of OD pairs from 5pm to 7pm yesterday.",

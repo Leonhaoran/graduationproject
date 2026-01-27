@@ -115,6 +115,7 @@ class ConversationBot:
             agent=agent, tools=tools,
             verbose=verbose, memory=self.agent_memory,
             handle_parsing_errors="Use the LLM output directly as your final answer!"
+            # handle_parsing_errors=True
         )
 
     def dialogue(self, input: str):

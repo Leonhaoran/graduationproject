@@ -163,7 +163,7 @@ class plotGeoHeatmap:
             Use this tool more than others if the human user want to see the traffic status of the network.
             The output will tell you the file path of the heat mapas a supplementary information for you to provide the final answer. 
             The input must be the target point in time in the "YYYY-MM-DD HH:MM:SS" format. 
-            
+
             """)
     def inference(self, time: str) -> str:
         try:
@@ -267,7 +267,7 @@ class odMap:
             Use this tool more than others if the question is about OD map.
             The output will tell you the file path of the OD map as a supplementary information for you to provide the final answer. 
             The input time_period should be a comma seperated string, with each part representing the start and end date and time of the time_period in the "YYYY-MM-DD HH:MM:SS" format.
-            
+
             """)
     def inference(self, time: str) -> str:
         begin, end = time.split(',')
