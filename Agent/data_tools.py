@@ -37,7 +37,9 @@ class UAVNameToInfo:
              description='''
              This tool is used to get the specific drone information according to drone name.
              Use this tool before others if the target drone info given by human user is the name rather than id.
-             The input should be a string representing the drone name.''')
+             The input should be a string representing the drone name.
+             Do not fabricate any field or value.
+             如果查找的字段为空或者NULL，则直接返回空或者NULL''')
     def inference(self, target: str) -> str:
         drone_name = target
 
