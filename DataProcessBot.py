@@ -20,7 +20,9 @@ from LLMAgent.ConversationBot import ConversationBot
 
 from Agent.data_tools import (
     GetCurrentTime,
-    UAVNameToInfo
+    UAVNameToInfo,
+    AllUAVDronesInfo,
+    AllAirRoadAirportsInfo
 )
 
 from Agent.sim_tools import (
@@ -78,8 +80,13 @@ if not os.path.exists('./fig/'):
 # ]
 
 toolModels = [
+    # data_tools
     GetCurrentTime(),
     UAVNameToInfo(),
+    AllUAVDronesInfo(),
+    AllAirRoadAirportsInfo(),
+
+    # sim_tools
     RunRflysimUT(),
 ]
 
@@ -115,6 +122,8 @@ botPrefix = """
 
 # 决定是否输出调试信息
 bot = ConversationBot(llm, toolModels, botPrefix, verbose=True)
+
+
 # bot = ConversationBot(llm, toolModels, botPrefix)
 
 

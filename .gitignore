@@ -12,6 +12,7 @@ build/
 develop-eggs/
 dist/
 downloads/
+dump.rdb
 eggs/
 .eggs/
 lib/
