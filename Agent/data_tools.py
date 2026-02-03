@@ -1,8 +1,9 @@
+import json
 from datetime import datetime
 
 import pandas as pd
 
-from Agent.db_connector import fetch_from_database
+from Agent.db_connector import fetch_from_database, insert_into_database, get_table_columns
 
 
 def prompts(name, description):
@@ -62,6 +63,66 @@ class UAVNameToInfo:
 
         msg = info_str
         return msg
+
+
+class InsertUAV:
+    def __init__(self) -> None:
+        pass
+
+    @prompts(
+        name="(data_tools)insert UAV",
+        description="""
+            Insert a new UAV into the database.
+
+            Input should be a JSON string.
+            Required fields:
+            - name
+            - max_speed
+            - safe_radius
+            - proposal_id
+
+            Other fields are optional.
+            Do not fabricate values.
+            """
+    )
+    def inference(self, payload: str) -> str:
+
+        REQUIRED_FIELDS = {
+            "name",
+            "max_speed",
+            "safe_radius",
+            "proposal_id"
+        }
+
+        try:
+            data = json.loads(payload)
+        except json.JSONDecodeError:
+            return "Invalid JSON input"
+
+        # 校验必填字段
+        missing = REQUIRED_FIELDS - data.keys()
+        if missing:
+            return f"Missing required fields: {sorted(missing)}"
+
+        # 过滤非法字段
+        table_columns = get_table_columns("uav_drones")
+        valid_data = {k: v for k, v in data.items() if k in table_columns}
+
+        if not valid_data:
+            return "No valid fields to insert"
+
+        # 动态生成 SQL
+        columns = ", ".join(valid_data.keys())
+        values = ", ".join(f":{k}" for k in valid_data.keys())
+
+        sql = f"""
+            INSERT INTO uav_drones ({columns})
+            VALUES ({values})
+            """
+
+        insert_into_database(sql, valid_data)
+
+        return f"UAV '{valid_data['name']}' inserted successfully"
 
 
 class AllUAVDronesInfo:

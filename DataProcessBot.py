@@ -22,7 +22,8 @@ from Agent.data_tools import (
     GetCurrentTime,
     UAVNameToInfo,
     AllUAVDronesInfo,
-    AllAirRoadAirportsInfo
+    AllAirRoadAirportsInfo,
+    InsertUAV
 )
 
 from Agent.sim_tools import (
@@ -85,6 +86,7 @@ toolModels = [
     UAVNameToInfo(),
     AllUAVDronesInfo(),
     AllAirRoadAirportsInfo(),
+    InsertUAV(),
 
     # sim_tools
     RunRflysimUT(),
@@ -175,15 +177,13 @@ with gr.Blocks(
             gr.Examples(
                 label='You may want to ask the following questions:',
                 examples=[
-                    "现在是什么时间？",
                     "drone_1对应的id是多少",
                     "drone_1的weight",
                     "跑仿真",
-                    "Show me the OD map from 7am to 9am today.",
+                    "插入一个名为drone_6的无人机，补充信息： max_speed为30 model为M3 safe_radius为10 proposal_id为1，serial_number为90",
                     "Show me the current network heatmap.",
                     "Show me the traffic volume of OD pairs from 5pm to 7pm yesterday.",
                     "Show me the traffic volume data overview of yesterday in a table.",
-                    "青弋江西大道在哪？",
                     "How's the traffic volume trend of road 1131 yesterday?"
                 ],
                 inputs=[humanMsg],

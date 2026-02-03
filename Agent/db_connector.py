@@ -29,3 +29,17 @@ def fetch_from_database(query):
         result = conn.execute(query_obj)
         conn.close()
         return result
+
+
+def insert_into_database(sql: str, params: dict):
+    db_path = os.path.join(os.getcwd(), 'db.sqlite3')
+    db_uri = f'sqlite:///{db_path}'
+    engine = sa.create_engine(db_uri)
+
+    with engine.begin() as conn:
+        conn.execute(sa.text(sql), params)
+
+
+def get_table_columns(table: str) -> set[str]:
+    rows = fetch_from_database(f"PRAGMA table_info({table});")
+    return {r[1] for r in rows}
