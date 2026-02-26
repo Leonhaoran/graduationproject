@@ -191,3 +191,13 @@ class AllAirRoadAirportsInfo:
             all_records.append(record_str)
 
         return ''.join(all_records)
+
+class BuildGraph:
+    def __init__(self) -> None:
+        pass
+
+    @prompts(name='(data_tools)build graph',
+             description='''
+             ''')
+    def inference(self, target: str) -> str:
+        pass

@@ -27,7 +27,9 @@ from Agent.data_tools import (
 )
 
 from Agent.sim_tools import (
-    RunRflysimUT
+    RunRflysimUT,
+    DisplayModeledTrajectory,
+    DisplayRawTrajectory
 )
 
 import gradio as gr
@@ -90,6 +92,8 @@ toolModels = [
 
     # sim_tools
     RunRflysimUT(),
+    DisplayModeledTrajectory(),
+    DisplayRawTrajectory()
 ]
 
 botPrefix = """
