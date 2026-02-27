@@ -23,7 +23,9 @@ from Agent.data_tools import (
     UAVNameToInfo,
     AllUAVDronesInfo,
     AllAirRoadAirportsInfo,
-    InsertUAV
+    InsertUAV,
+    BuildGraph,
+    ExtractData
 )
 
 from Agent.sim_tools import (
@@ -89,6 +91,8 @@ toolModels = [
     AllUAVDronesInfo(),
     AllAirRoadAirportsInfo(),
     InsertUAV(),
+    BuildGraph(),
+    ExtractData(),
 
     # sim_tools
     RunRflysimUT(),
@@ -185,8 +189,8 @@ with gr.Blocks(
                     "drone_1的weight",
                     "跑仿真",
                     "插入一个名为drone_6的无人机，补充信息： max_speed为30 model为M3 safe_radius为10 proposal_id为1，serial_number为90",
-                    "Show me the current network heatmap.",
-                    "Show me the traffic volume of OD pairs from 5pm to 7pm yesterday.",
+                    "帮我对轨迹进行建模",
+                    "展示轨迹图",
                     "Show me the traffic volume data overview of yesterday in a table.",
                     "How's the traffic volume trend of road 1131 yesterday?"
                 ],

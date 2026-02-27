@@ -1,4 +1,6 @@
 import json
+import sys
+import subprocess
 from datetime import datetime
 
 import pandas as pd
@@ -192,12 +194,78 @@ class AllAirRoadAirportsInfo:
 
         return ''.join(all_records)
 
+
 class BuildGraph:
     def __init__(self) -> None:
         pass
 
     @prompts(name='(data_tools)build graph',
              description='''
+             This tool executes the data modeling pipeline sequentially.
+             If the user wants to model or re-model trajectories, utilize this tool. 
+             There is no input.
              ''')
     def inference(self, target: str) -> str:
+        # 将需要按顺序执行的脚本放入列表中
+        scripts = [
+            r"C:\Users\Leon\Desktop\pythonProject1\ads-b\main1.py",
+            r"C:\Users\Leon\Desktop\pythonProject1\ads-b\build_graph2.py",
+            r"C:\Users\Leon\Desktop\pythonProject1\ads-b\path3.py",
+            r"C:\Users\Leon\Desktop\pythonProject1\ads-b\filter4.py",
+            r"C:\Users\Leon\Desktop\pythonProject1\ads-b\label5.py"
+        ]
+
+        for script_path in scripts:
+            try:
+                # 使用 subprocess.run，它会阻塞主程序，直到该子进程执行完毕
+                # check=True 表示如果子进程报错（返回码非 0），会抛出 CalledProcessError 异常
+                subprocess.run(
+                    [sys.executable, script_path],
+                    check=True
+                )
+            except subprocess.CalledProcessError as e:
+                # 捕获脚本内部运行报错
+                return f"FAILED_ON_SCRIPT {script_path} WITH EXIT CODE: {e.returncode}"
+            except Exception as e:
+                # 捕获其他系统级别的报错
+                return f"SYSTEM_ERROR_ON {script_path}: {str(e)}"
+
+        # 只有当上面的循环全部成功跑完，才会执行到这里
+        return "BUILD GRAPH SUCCESSFULLY"
+
+
+class ExtractData:
+    def __init__(self) -> None:
         pass
+
+    @prompts(name='(data_tools)extract data',
+             description='''
+             This tool is used to extract data from JSON files and insert it into the database.
+             There is no input.
+             ''')
+    def inference(self, target: str) -> str:
+        scripts = [
+            r"C:\Users\Leon\Desktop\graduationproject\insert_nodes.py",
+            r"C:\Users\Leon\Desktop\graduationproject\insert_airport.py",
+            r"C:\Users\Leon\Desktop\graduationproject\insert_uav_drones.py",
+            r"C:\Users\Leon\Desktop\graduationproject\insert_edge.py",
+            r"C:\Users\Leon\Desktop\graduationproject\insert_flight_plan.py"
+        ]
+
+        for script_path in scripts:
+            try:
+                # 使用 subprocess.run，它会阻塞主程序，直到该子进程执行完毕
+                # check=True 表示如果子进程报错（返回码非 0），会抛出 CalledProcessError 异常
+                subprocess.run(
+                    [sys.executable, script_path],
+                    check=True
+                )
+            except subprocess.CalledProcessError as e:
+                # 捕获脚本内部运行报错
+                return f"FAILED_ON_SCRIPT {script_path} WITH EXIT CODE: {e.returncode}"
+            except Exception as e:
+                # 捕获其他系统级别的报错
+                return f"SYSTEM_ERROR_ON {script_path}: {str(e)}"
+
+        # 只有当上面的循环全部成功跑完，才会执行到这里
+        return "EXTRACT DATA SUCCESSFULLY"
